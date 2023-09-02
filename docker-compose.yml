@@ -15,16 +15,16 @@ services:
         container_name: ${COMPOSER_PROJECT_NAME}-portainer
         volumes:
             - portainer-data:/data
-            - ${DOCKER_SOCKET}:/var/run/docker.sock
+            - "${DOCKER_SOCKET}:/var/run/docker.sock"
         networks:
             net:
                 aliases:
-                    - portainer.${DOMAIN}
+                    - "portainer.${DOMAIN}"
         ports:
-            - ${HOST_NET_ADDR}:9000:9000/tcp
+            - "${HOST_NET_ADDR}:9000:9000/tcp"
 
     dns:
-        build: ./images/dnsmasq
+        build: ./img/dnsmasq
         image: "${COMPOSE_PROJECT_NAME}-dns"
         container_name: "${COMPOSE_PROJECT_NAME}-dns"
         networks:
@@ -37,45 +37,56 @@ services:
         cap_add:
             - NET_ADMIN
 
+    nginx:
+        build: ./img/nginx
+        image: "${COMPOSE_PROJECT_NAME}-nginx"
+        container_name: "${COMPOSE_PROJECT_NAME}-nginx"
+        networks:
+            default:
+                aliases:
+                    - "nginx.${DOMAIN}"
+        ports:
+            - "${HOST_NET_ADDR}:8081:8081/tcp"
+
     mysql:
         image: mysql
-        container_name: ${COMPOSER_PROJECT_NAME}-mysql
+        container_name: "${COMPOSER_PROJECT_NAME}-mysql"
         networks:
             net:
                 aliases:
-                    - mysql.${DOMAIN}
+                    - "mysql.${DOMAIN}"
         ports:
-            - ${HOST_NET_ADDR}:3306:3306/tcp
+            - "${HOST_NET_ADDR}:3306:3306/tcp"
         environment:
             MYSQL_ROOT_PASSWORD: root
         volumes:
-            - ${MYSQL_DATA}:/var/lib/mysql
+            - "${MYSQL_DATA}:/var/lib/mysql"
             - ./etc/mysql:/etc/mysql/conf.d
 
     composer:
         image: composer
-        container_name: ${COMPOSER_PROJECT_NAME}-composer
+        container_name: "${COMPOSER_PROJECT_NAME}-composer"
         networks:
             - net
         volumes:
-            - ${PROJECT_DIR}:/project
+            - "${PROJECT_DIR}:/project"
         working_dir: /project
 
     php-cli:
         build: ./img/php-cli
-        image: ${COMPOSER_PROJECT_NAME}-php-cli
-        container_name: ${COMPOSER_PROJECT_NAME}-php-cli
+        image: "${COMPOSER_PROJECT_NAME}-php-cli"
+        container_name: "${COMPOSER_PROJECT_NAME}-php-cli"
         networks:
             net:
                 aliases:
-                    - www.${DOMAIN}
+                    - "www.${DOMAIN}"
         ports:
-            - ${HOST_NET_ADDR}:80:80/tcp
+            - "${HOST_NET_ADDR}:80:80/tcp"
         volumes:
-            - ${PROJECT_DIR}:/project
+            - "${PROJECT_DIR}:/project"
             - ./etc/php/php.ini:/usr/local/etc/php/php.ini:ro
             - ./etc/php/php.ini.local:/usr/local/etc/php/conf.d/99-php-local.ini
-        command: -S 0.0.0.0:80 -t ${PUBLIC_DIR}
+        command: "-S 0.0.0.0:80 -t ${PUBLIC_DIR}"
 
     proxy:
         image: jwilder/nginx-proxy
