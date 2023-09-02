@@ -20,7 +20,7 @@ authors:
     orcid: 'https://orcid.org/0000-0001-8986-2886'
     affiliation: Redeyed Software
 
-repository-code: 'https://github.com/ragdata/labhackers-toolkit'
+repository-code: 'https://github.com/ragdata/docker-php-template'
 
 url: 'https://ragdata.github.io/docker-php-template'
 
