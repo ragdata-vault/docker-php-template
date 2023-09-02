@@ -23,6 +23,20 @@ services:
         ports:
             - ${HOST_NET_ADDR}:9000:9000/tcp
 
+    dns:
+        build: ./images/dnsmasq
+        image: "${COMPOSE_PROJECT_NAME}-dns"
+        container_name: "${COMPOSE_PROJECT_NAME}-dns"
+        networks:
+            default:
+                aliases:
+                    - "dns.${DOMAIN}"
+        ports:
+            - "${HOST_NET_ADDR}:53:53/udp"
+            - "${HOST_NET_ADDR}:53:53/tcp"
+        cap_add:
+            - NET_ADMIN
+
     mysql:
         image: mysql
         container_name: ${COMPOSER_PROJECT_NAME}-mysql
@@ -62,3 +76,46 @@ services:
             - ./etc/php/php.ini:/usr/local/etc/php/php.ini:ro
             - ./etc/php/php.ini.local:/usr/local/etc/php/conf.d/99-php-local.ini
         command: -S 0.0.0.0:80 -t ${PUBLIC_DIR}
+
+    proxy:
+        image: jwilder/nginx-proxy
+        container_name: "${COMPOSE_PROJECT_NAME}-proxy"
+        ports:
+            - "${HOST_NET_ADDR}:${PROXY_HTTP_PORT}:80/tcp"
+            - "${HOST_NET_ADDR}:${PROXY_HTTPS_PORT}:443/tcp"
+        volumes:
+            - "${DOCKER_SOCKET}:/tmp/docker.sock:ro"
+
+    vpn:
+        image: kylemanna/openvpn
+        container_name: "${COMPOSE_PROJECT_NAME}-vpn"
+        ports:
+            - "${HOST_NET_ADDR}:1194:1194/udp"
+        cap_add:
+            - NET_ADMIN
+        volumes:
+            - "ovpn-data:/etc/openvpn"
+
+    clist:
+        image: lbacik/containers-url-lister
+        container_name: "${COMPOSE_PROJECT_NAME}-clist"
+        ports:
+            - "${HOST_NET_ADDR}:3333:3000/tcp"
+        volumes:
+            - "${DOCKER_SOCKET}:/var/run/docker.sock"
+        environment:
+            VIRTUAL_HOST: "clist.proxy.${DOMAIN}"
+            #VIRTUAL_PORT: 3000 - lack of EXPOSE in the image
+
+    ssh:
+        image: lbacik/ssh-passthrough
+        container_name: "${COMPOSE_PROJECT_NAME}-ssh"
+        ports:
+            - "${HOST_NET_ADDR}:2233:22/tcp"
+        volumes:
+            - "${DOCKER_SOCKET}:/var/run/docker.sock"
+        environment:
+            SHELL: /bin/bash
+            AUTH_METHOD: password
+            AUTH_USER: user
+            AUTH_PASS: pass
