@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+SCRIPT_DIR=`dirname "$0"`
+source ${SCRIPT_DIR}/../.env
+
+docker-compose -f ${DOCKER_DIR}/docker-compose.yml \
+	run --rm composer $@

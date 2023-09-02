@@ -1,0 +1,64 @@
+version: '3.9'
+
+networks:
+    net:
+        driver: bridge
+
+volumes:
+    portainer-data:
+        driver: local
+
+services:
+
+    portainer:
+        image: portainer/portainer
+        container_name: ${COMPOSER_PROJECT_NAME}-portainer
+        volumes:
+            - portainer-data:/data
+            - ${DOCKER_SOCKET}:/var/run/docker.sock
+        networks:
+            net:
+                aliases:
+                    - portainer.${DOMAIN}
+        ports:
+            - ${HOST_NET_ADDR}:9000:9000/tcp
+
+    mysql:
+        image: mysql
+        container_name: ${COMPOSER_PROJECT_NAME}-mysql
+        networks:
+            net:
+                aliases:
+                    - mysql.${DOMAIN}
+        ports:
+            - ${HOST_NET_ADDR}:3306:3306/tcp
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+        volumes:
+            - ${MYSQL_DATA}:/var/lib/mysql
+            - ./etc/mysql:/etc/mysql/conf.d
+
+    composer:
+        image: composer
+        container_name: ${COMPOSER_PROJECT_NAME}-composer
+        networks:
+            - net
+        volumes:
+            - ${PROJECT_DIR}:/project
+        working_dir: /project
+
+    php-cli:
+        build: ./img/php-cli
+        image: ${COMPOSER_PROJECT_NAME}-php-cli
+        container_name: ${COMPOSER_PROJECT_NAME}-php-cli
+        networks:
+            net:
+                aliases:
+                    - www.${DOMAIN}
+        ports:
+            - ${HOST_NET_ADDR}:80:80/tcp
+        volumes:
+            - ${PROJECT_DIR}:/project
+            - ./etc/php/php.ini:/usr/local/etc/php/php.ini:ro
+            - ./etc/php/php.ini.local:/usr/local/etc/php/conf.d/99-php-local.ini
+        command: -S 0.0.0.0:80 -t ${PUBLIC_DIR}
