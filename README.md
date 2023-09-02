@@ -27,7 +27,7 @@
 
 #### _Elapsed Project Time_
 
-[![wakatime](https://wakatime.com/badge/user/7e04d9d4-3a44-495e-b622-69fdbafd036c/project/a56f84b2-716c-48dd-b4a4-3ef7a9884a27.svg?style=for-the-badge)](https://wakatime.com/badge/user/7e04d9d4-3a44-495e-b622-69fdbafd036c/project/a56f84b2-716c-48dd-b4a4-3ef7a9884a27)
+[![wakatime](https://wakatime.com/badge/user/7e04d9d4-3a44-495e-b622-69fdbafd036c/project/519a574e-266d-4b29-9d6d-13d8fb6541fb.svg?style=for-the-badge)](https://wakatime.com/badge/user/7e04d9d4-3a44-495e-b622-69fdbafd036c/project/519a574e-266d-4b29-9d6d-13d8fb6541fb)
 
 </div>
 
@@ -42,10 +42,8 @@ If you like this repository, please give it a ⭐ (it really does help)
 <details><summary><h2><a name="toc">📖 Table of Contents</a></h2></summary>
 
 - [Project Overview](#-project-overview)
-  - [Branch Reliability](#branch-reliability) 
 - [What's Included?](#-whats-included)
 - [Installation](#-installation)
-- [Badges](#-badges)
 - [Available Support](#-available-support)
 - [Project Supporters](#-project-supporters)
 - [Author/Maintainer](#-author--maintainer)
@@ -63,17 +61,15 @@ This template repository provides the basis for a dockerized PHP development env
 
 ## ❓ [What's Included?](#toc)
 
-
+- Docker Dev Stack
+  - Portainer
+  - MySQL
+  - Composer
+  - PHP-CLI
 
 [`^ Top`](#toc)
 
 ## 📂 [Installation](#toc)
-
-
-
-[`^ Top`](#toc)
-
-## 📛 [Badges](#toc)
 
 
 
