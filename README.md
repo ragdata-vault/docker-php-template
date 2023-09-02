@@ -71,7 +71,7 @@ This template repository provides the basis for a dockerized PHP development env
 
 ## 📂 [Installation](#toc)
 
-
+Clone this repo or [use it as a template](https://github.com/new?template_name=docker-php-template&template_owner=Ragdata)
 
 [`^ Top`](#toc)
 
